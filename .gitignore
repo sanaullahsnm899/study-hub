@@ -1,0 +1,18 @@
+node_modules
+.next
+out
+
+# Environment — never commit secrets
+.env
+.env.local
+.env.*.local
+.env.test
+
+# Local file storage (development provider only)
+.storage
+.storage-test
+
+coverage
+*.log
+.DS_Store
+next-env.d.ts

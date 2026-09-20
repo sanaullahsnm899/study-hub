@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="StudyHub">
+  <rect width="64" height="64" fill="#0f6b57"/>
+  <path d="M32 20l2.9 7.1 7.6.6-5.8 5 1.8 7.4L32 36.1l-6.5 4-1.8-7.4-5.8-5 7.6-.6z" fill="#ffffff"/>
+  <path d="M22 45h20" stroke="#ffffff" stroke-opacity="0.6" stroke-width="2.6" stroke-linecap="round"/>
+</svg>
