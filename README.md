@@ -7,26 +7,6 @@ an account; the Class Representative signs in to a private dashboard to upload m
 organise it. Files live in Google Drive, the database holds only metadata.
 
 ---
-
-## Contents
-
-1. [Features](#features)
-2. [Architecture](#architecture)
-3. [Tech stack](#tech-stack)
-4. [Folder structure](#folder-structure)
-5. [Database setup](#database-setup)
-6. [Environment variables](#environment-variables)
-7. [Google Drive setup](#google-drive-setup)
-8. [Admin account setup](#admin-account-setup)
-9. [Running locally](#running-locally)
-10. [Testing](#testing)
-11. [Production build](#production-build)
-12. [Deploying to Vercel](#deploying-to-vercel)
-13. [Troubleshooting](#troubleshooting)
-14. [Security notes](#security-notes)
-
----
-
 ## Features
 
 ### For students (no account, no login)
@@ -37,17 +17,6 @@ organise it. Files live in Google Drive, the database holds only metadata.
 - Material pages with an inline PDF preview, file details, tags and related material
 - View in the browser, download, or open an external link — all counted anonymously
 - Light, dark and system themes; installable as a PWA
-
-### For the class representative
-
-- Dashboard with library metrics and recent activity
-- Materials: create, edit, publish, unpublish, archive, soft-delete, with search, five filters, sorting, pagination and bulk actions
-- Drag-and-drop upload with a queue, per-file progress, retry and removal
-- Semesters, subjects and categories: full CRUD, reordering, and show/hide without deleting
-- Analytics: 30-day download trend, breakdowns by semester and category, most-downloaded list
-- Settings: storage status, Drive setup instructions, password change
-
----
 
 ## Architecture
 
@@ -253,32 +222,6 @@ npm test           # 76 passing
 npm run build      # compiles, 36 routes
 npm start
 ```
-
----
-
-## Deploying to Vercel
-
-1. Push the project to GitHub. `.env*` files are git-ignored — never commit them.
-2. In Vercel, **Add New → Project**, and import the repository.
-3. Framework preset **Next.js**; the defaults are correct.
-4. Create the database: a [Supabase](https://supabase.com) project, or Vercel Postgres.
-5. Copy its **connection string** (Supabase: Project Settings → Database → URI, session pooler).
-6. In Vercel → **Settings → Environment Variables**, add `DATABASE_URL`.
-7. Add `AUTH_SECRET` — generate with `openssl rand -base64 48`.
-8. Add `GOOGLE_DRIVE_CLIENT_EMAIL`, `GOOGLE_DRIVE_PRIVATE_KEY` and `GOOGLE_DRIVE_ROOT_FOLDER_ID`.
-9. Add `NEXT_PUBLIC_SITE_URL` with your final domain.
-10. Add `ADMIN_EMAIL`, `ADMIN_PASSWORD`, `ADMIN_NAME` for the first admin.
-11. Apply the schema. Locally, with `DATABASE_URL` pointed at production: `npm run db:migrate`. Or paste `db/schema.sql` into the Supabase SQL editor.
-12. Create the admin: `npm run admin:create`, again with the production `DATABASE_URL`.
-13. **Deploy**, and wait for the build.
-14. Visit `/admin`, sign in, and change the password from Settings.
-15. Confirm **Settings** reports Google Drive as the active provider, then upload one file end to end.
-
-**Vercel has an ephemeral filesystem.** Without Drive credentials, uploads go to local disk and
-vanish on the next deployment. Configure Drive before real use. Uploads also pass through a
-serverless function, so keep `MAX_UPLOAD_MB` within your plan's request-body limit (4.5 MB on
-Hobby; raise it or upload directly to Drive on Pro).
-
 ---
 
 ## Troubleshooting
@@ -309,21 +252,3 @@ Hobby; raise it or upload directly to Drive on Pro).
 - **Headers**: `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy` and a `Permissions-Policy` are set in `next.config.ts`.
 - **Errors** are mapped to safe messages; stack traces stay in server logs.
 - **Secrets** live only in the environment. `/admin` and `/api/` are disallowed in `robots.txt` and the admin area is `noindex`.
-
-### Content
-
-The demo data is fictional and contains no copyrighted textbooks. Material that cannot be
-redistributed is linked to its authorised source (MIT OpenCourseWare, the RFC Editor, MDN, NIST,
-Stanford CS221) rather than copied. Please keep it that way.
-
----
-
-## Limitations and next steps
-
-- One admin role; no per-user permissions or audit trail.
-- Rate limiting is in-memory, so it resets on redeploy and is per-instance. Use Upstash or Redis when scaling out.
-- Uploads proxy through a serverless function; large files would be better sent straight to Drive with a resumable session.
-- No email: no password reset flow, no notifications when material is published.
-- Analytics are counts only — deliberately, since students are never identified.
-- Reordering uses up/down controls rather than pointer drag-and-drop, which keeps it keyboard- and touch-accessible.
-- The PWA has a manifest and icons but no offline service worker.
